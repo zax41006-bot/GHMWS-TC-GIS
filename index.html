@@ -192,7 +192,8 @@ async function init() {
         }
 
         const pPoints = pastData.map(d => [d.lat, d.lng]);
-        getSmoothLine(pPoints, { color: '#32CD32', weight: 4 }).addTo(trackLayer);
+        L.polyline(pPoints, { color: '#32CD32', weight: 4 }).addTo(trackLayer);
+
         let fPath = [[latestPoint.lat, latestPoint.lng]];
         forecastData.forEach(d => fPath.push([d.lat, d.lng]));
         getSmoothLine(fPath, { color: '#3498db', weight: 3, dashArray: '8, 8' }).addTo(trackLayer);
