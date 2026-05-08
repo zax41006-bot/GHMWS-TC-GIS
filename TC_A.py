@@ -14,14 +14,14 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import tcmarkers  
 
-BASE_PATH = r"C:\Users\andyzhang\Desktop\GHMWS-TC-GIS"
+BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 PAST_CSV = os.path.join(BASE_PATH, "past_track_A.csv")
 FORE_CSV = os.path.join(BASE_PATH, "forecast_track_A.csv")
 OUTPUT_IMG = os.path.join(BASE_PATH, "TC_forecast_A.png")
 
 # 確保中文字體顯示正常
-plt.rcParams["font.family"] = ["Microsoft YaHei", "SimHei", "sans-serif"]
-plt.rcParams["axes.unicode_minus"] = False
+plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei', 'Microsoft YaHei', 'SimHei', 'Arial Unicode MS']
+plt.rcParams['axes.unicode_minus'] = False
 
 def get_info(wind):
     if wind < 41: return "LPA 低壓區", "#E0E0E0"
