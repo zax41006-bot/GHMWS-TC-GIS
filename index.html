@@ -17,6 +17,21 @@
             display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
             z-index: 1100; box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
+
+        .img-btn {
+            background: #e67e22;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-left: 15px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .img-btn:hover { background: #d35400; }
+
         #tc-selector { background: #34495e; color: white; border: 1px solid #7f8c8d; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
 
         #mapid { position: absolute; top: 50px; left: 0; bottom: 0; right: 0; background: #aad3df; }
@@ -35,6 +50,28 @@
 
         .popup-title { font-weight: bold; border-bottom: 1px solid #ccc; margin-bottom: 5px; color: #d35400; padding-bottom: 2px; }
         .popup-item { margin: 3px 0; font-family: 'Consolas', monospace; font-size: 12px; }
+
+        #img-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+        }
+        #img-overlay img {
+            max-width: 95%;
+            max-height: 90%;
+            border: 3px solid white;
+            border-radius: 5px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+        .close-btn {
+            position: absolute; top: 20px; right: 30px;
+            color: white; font-size: 40px; cursor: pointer;
+        }
 
         @media screen and (max-width: 768px) {
             .professional-legend {
@@ -61,13 +98,21 @@
 <body>
 
 <div class="header">
-    <b>🌀 GHMWS 熱帶氣旋預報GIS（測試版）</b>
+    <div>
+        <b>🌀 GHMWS 熱帶氣旋預報GIS（測試版）</b>
+        <button class="img-btn" onclick="toggleForecastImg()">🖼️ 圖片預報</button>
+    </div>
     <select id="tc-selector" onchange="init()">
         <option value="A">黑格比</option>
     </select>
 </div>
 
 <div id="mapid"></div>
+
+<div id="img-overlay" onclick="this.style.display='none'">
+    <span class="close-btn">&times;</span>
+    <img id="forecast-img-src" src="" alt="圖片版預報加載中...">
+</div>
 
 <div class="professional-legend">
     <div class="legend-title">路徑圖例</div>
@@ -101,6 +146,14 @@ var map = L.map('mapid', { zoomControl: false }).setView([18.0, 135.0], 5);
 L.control.zoom({ position: 'topleft' }).addTo(map);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
 let trackLayer = L.layerGroup().addTo(map);
+
+function toggleForecastImg() {
+    const target = document.getElementById('tc-selector').value;
+    const overlay = document.getElementById('img-overlay');
+    const img = document.getElementById('forecast-img-src');
+    img.src = `TC_forecast_${target}.png?t=${new Date().getTime()}`;
+    overlay.style.display = 'flex';
+}
 
 function parseCSV(text) {
     const lines = text.trim().split('\n');
@@ -155,8 +208,8 @@ function createPopupContent(data, type) {
         <div class="popup-item"> ${timeLabel}</div>
         <div class="popup-item"> 位置: ${data.lat.toFixed(1)}°N, ${data.lng.toFixed(1)}°E</div>
         <div class="popup-item"> 強度: ${intensityNames[data.intensity] || data.intensity}</div>
-        <div class="popup-item"> 風速: ${wind} kph</div>
-        <div class="popup-item"> 氣壓: ${pres} hPa</div>
+        <div class="popup-item"> 近中心最大風速: ${wind} kph</div>
+        <div class="popup-item"> 中心氣壓: ${pres} hPa</div>
     `;
 }
 
