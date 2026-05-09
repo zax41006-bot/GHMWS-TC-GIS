@@ -33,7 +33,7 @@ def get_info(wind):
     else: return "SUTY 超強颱風", "#9B59B6"
 
 def draw_chart():
-    print(f"[{time.strftime('%H:%M:%S')}] 正在優化佈局並生成圖片...")
+    print(f"[{time.strftime('%H:%M:%S')}] 正在生成預報...")
     try:
         df_past = pd.read_csv(PAST_CSV)
         df_fore = pd.read_csv(FORE_CSV)
