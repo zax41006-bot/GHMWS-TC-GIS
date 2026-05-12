@@ -100,11 +100,11 @@
 <div class="header">
     <div>
         <b>🌀 GHMWS 熱帶氣旋預報GIS（測試版）</b>
-        <button class="img-btn" onclick="toggleForecastImg()">預報路徑圖</button>
+        <!--button class="img-btn" onclick="toggleForecastImg()">預報路徑圖</button-->
     </div>
-    <select id="tc-selector" onchange="init()">
+    <!--select id="tc-selector" onchange="init()">
         <option value="A">黑格比</option>
-    </select>
+    </select-->
 </div>
 
 <div id="mapid"></div>
@@ -147,7 +147,7 @@ L.control.zoom({ position: 'topleft' }).addTo(map);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
 let trackLayer = L.layerGroup().addTo(map);
 
-function toggleForecastImg() {
+/*function toggleForecastImg() {
     const target = document.getElementById('tc-selector').value;
     const overlay = document.getElementById('img-overlay');
     const img = document.getElementById('forecast-img-src');
@@ -283,7 +283,7 @@ async function init() {
 
         map.fitBounds(pPoints.concat(fPath), { padding: [50, 50] });
     } catch (e) { console.error("數據加載失敗:", e); }
-}
+}*/
 init();
 </script>
 </body>
