@@ -125,7 +125,7 @@ def draw_chart():
         ax.text(0.01, 0.98, info_text, transform=ax.transAxes, va='top', fontsize=12, zorder=20,
                 bbox=dict(facecolor='white', alpha=0.85, edgecolor='#BDC3C7', boxstyle='round,pad=0.5'))
 
-        ax.set_title("熱帶氣旋“未命名”路徑預報圖", fontsize=28, fontweight='bold', pad=25)
+        ax.set_title("熱帶氣旋“薔薇”路徑預報圖", fontsize=28, fontweight='bold', pad=25)
 
         plt.savefig(OUTPUT_IMG, dpi=300, bbox_inches='tight')
         plt.close() 
