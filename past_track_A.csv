@@ -18,4 +18,5 @@ datetime,lat,lng,intensity,wind,minimum central pressure,type
 29/5/2026 02:00,14.3,134.5,TS,75,995,past
 29/5/2026 08:00,15.2,133.8,TS,75,995,past
 29/5/2026 11:00,15.7,133.5,TS,75,994,past
-29/5/2026 14:00,16,132.8,TS,85,990,current
+29/5/2026 14:00,16,132.8,TS,85,990,past
+29/5/2026 20:00,16,132.3,STS,90,985,current
