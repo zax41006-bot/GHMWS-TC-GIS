@@ -14,14 +14,10 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import tcmarkers  
 
-# 1. 取得目前腳本所在的絕對目錄路徑
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
-
-# 2. 轉換為絕對路徑的 4 個主要路徑
-PAST_CSV = os.path.abspath(os.path.join(BASE_PATH, "past_track_A.csv"))
-FORE_CSV = os.path.abspath(os.path.join(BASE_PATH, "forecast_track_A.csv"))
-OUTPUT_IMG = os.path.abspath(os.path.join(BASE_PATH, "TC_forecast_A.png"))
-WATCH_PATH = BASE_PATH  # 監聽的資料夾絕對路徑
+PAST_CSV = os.path.join(BASE_PATH, "past_track_A.csv")
+FORE_CSV = os.path.join(BASE_PATH, "forecast_track_A.csv")
+OUTPUT_IMG = os.path.join(BASE_PATH, "TC_forecast_A.png")
 
 # 確保中文字體顯示正常
 plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei', 'Microsoft YaHei', 'SimHei', 'Arial Unicode MS']
@@ -39,7 +35,6 @@ def get_info(wind):
 def draw_chart():
     print(f"[{time.strftime('%H:%M:%S')}] 正在生成預報...")
     try:
-        # 使用絕對路徑讀取
         df_past = pd.read_csv(PAST_CSV)
         df_fore = pd.read_csv(FORE_CSV)
         
@@ -56,10 +51,12 @@ def draw_chart():
         
         ax.set_extent([105.0, 160.0, 2.0, 38.0], crs=ccrs.PlateCarree())
 
+        # 地圖風格微調
         ax.add_feature(cfeature.LAND, facecolor="#F7F7F2", edgecolor="#7F8C8D", zorder=1)
         ax.add_feature(cfeature.OCEAN, facecolor="#EBF5FB", zorder=0)
         ax.add_feature(cfeature.COASTLINE, linewidth=0.8, color="#34495E", zorder=2)
 
+        # --- 增加經緯度網格線 ---
         gl = ax.gridlines(draw_labels=True, dms=False, x_inline=False, y_inline=False,
                           linewidth=0.5, color='#DCDCDC', linestyle='--', zorder=2)
         gl.top_labels = False
@@ -69,6 +66,7 @@ def draw_chart():
         gl.xlabel_style = {'size': 11}
         gl.ylabel_style = {'size': 11}
 
+        # 繪製路徑
         ax.plot([d[1] for d in past_data], [d[2] for d in past_data], color="#27AE60", linewidth=4, zorder=4)
 
         f_hs = [d[4] for d in forecast_data]
@@ -96,6 +94,7 @@ def draw_chart():
             if h in {24, 48, 72, 96, 120}:
                 ax.plot(ln, lt, marker=tcmarkers.HU, ms=10, color=col, mec='k', mew=1, zorder=10)
 
+        # --- 調整後的圖例 (適當加大) ---
         legend_elements = [
             Line2D([0], [0], color='#27AE60', lw=4, label='過去路徑'),
             Line2D([0], [0], color='#3498DB', lw=3, ls='--', label='預報路徑'),
@@ -117,16 +116,17 @@ def draw_chart():
                         edgecolor='#BDC3C7', labelspacing=0.6)
         leg.set_zorder(100)
 
+        # 右上角站名 (適當加大)
         ax.text(0.99, 0.98, "粵港澳天氣站 GHMWS", transform=ax.transAxes, ha='right', va='top', 
                 fontsize=18, fontweight='bold', color='#2C3E50', alpha=0.8, zorder=20)
         
+        # 左上角信息框 (適當加大字體)
         info_text = f"現時位置：{curr[2]}°N, {curr[1]}°E\n時間：{curr[0]}\n近中心最大風速：{curr[3]} kph\n中心氣壓：{curr[4]} hPa"
         ax.text(0.01, 0.98, info_text, transform=ax.transAxes, va='top', fontsize=12, zorder=20,
                 bbox=dict(facecolor='white', alpha=0.85, edgecolor='#BDC3C7', boxstyle='round,pad=0.5'))
 
         ax.set_title("熱帶氣旋“薔薇”路徑預報圖", fontsize=28, fontweight='bold', pad=25)
 
-        # 使用絕對路徑儲存
         plt.savefig(OUTPUT_IMG, dpi=300, bbox_inches='tight')
         plt.close() 
         print(">>> 預報圖已製作完成。")
@@ -135,9 +135,7 @@ def draw_chart():
 
 class CSVHandler(FileSystemEventHandler):
     def on_modified(self, event):
-        # 轉為絕對路徑進行比對，避免相對路徑邏輯出錯
-        src_abs_path = os.path.abspath(event.src_path)
-        if src_abs_path.endswith(".csv"):
+        if event.src_path.endswith(".csv"):
             time.sleep(0.5) 
             draw_chart()
 
@@ -145,16 +143,11 @@ if __name__ == "__main__":
     draw_chart() 
     event_handler = CSVHandler()
     observer = Observer()
-    
-    # 使用絕對路徑的變數 WATCH_PATH 進行監聽
-    observer.schedule(event_handler, WATCH_PATH, recursive=False)
+    observer.schedule(event_handler, BASE_PATH, recursive=False)
     observer.start()
-    print(f"[{time.strftime('%H:%M:%S')}] 監控服務已啟動，正在監聽資料夾: {WATCH_PATH}")
     try:
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
-        print("\n正在停止監控服務...")
         observer.stop()
     observer.join()
-    print("服務已安全退出。")
