@@ -134,20 +134,40 @@ def draw_chart():
         print(f"錯誤: {e}")
 
 class CSVHandler(FileSystemEventHandler):
-    def on_modified(self, event):
-        if event.src_path.endswith(".csv"):
-            time.sleep(0.5) 
-            draw_chart()
+    def on_any_event(self, event):
+        # 1. 忽略資料夾本身的變更事件
+        if event.is_directory:
+            return
+            
+        # 2. 捕捉包含 修改、建立、移動 在內的所有檔案儲存行為
+        if event.event_type in ('modified', 'created', 'moved'):
+            # 處理移動/重新命名事件時取得新路徑，其餘取得源路徑
+            check_path = event.dest_path if event.event_type == 'moved' else event.src_path
+            
+            # 精準比對副檔名
+            if check_path.endswith(".csv"):
+                print(f"[{time.strftime('%H:%M:%S')}] 偵測到關鍵檔案變更 ({event.event_type}): {os.path.basename(check_path)}")
+                
+                # 3. 延遲 1.0 秒以確保作業系統完全釋放檔案鎖定，防範 Permission Denied 錯誤
+                time.sleep(1.0) 
+                draw_chart()
 
 if __name__ == "__main__":
+    # 啟動時先自動生成第一張圖
     draw_chart() 
+    
     event_handler = CSVHandler()
     observer = Observer()
     observer.schedule(event_handler, BASE_PATH, recursive=False)
     observer.start()
+    print(f"[{time.strftime('%H:%M:%S')}] 監控服務已啟動，正在監聽資料夾...")
+    
     try:
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
+        print("\n正在停止監控服務...")
         observer.stop()
+        
     observer.join()
+    print(">>> 服務已安全退出。")
