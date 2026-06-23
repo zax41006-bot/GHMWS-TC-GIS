@@ -154,7 +154,7 @@ function toggleForecastImg() {
     const overlay = document.getElementById('img-overlay');
     const img = document.getElementById('forecast-img-src');
     if (target === 'ALL') {
-        alert('全部模式下請選擇單一氣旋檢視預報圖');
+        alert('顯示所有熱帶氣旋的情況下，請選擇單一氣旋檢視預報圖');
         return;
     }
     img.src = `TC_forecast_${target}.png?t=${new Date().getTime()}`;
