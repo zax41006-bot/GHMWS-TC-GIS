@@ -49,7 +49,7 @@ def draw_chart():
         fig = plt.figure(figsize=(18, 12))
         ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
         
-        ax.set_extent([105.0, 145.0, 5.0, 35.0], crs=ccrs.PlateCarree())
+        ax.set_extent([105.0, 155.0, 5.0, 45.0], crs=ccrs.PlateCarree())
 
         # 地圖風格微調
         ax.add_feature(cfeature.LAND, facecolor="#F7F7F2", edgecolor="#7F8C8D", zorder=1)
