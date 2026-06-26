@@ -102,7 +102,7 @@ def draw_chart():
                    markerfacecolor='#FFF5D7', markeredgecolor='#FFD180', markersize=12, alpha=0.6),
             Line2D([0], [0], color='none', label=''), 
             Line2D([0], [0], color='none', label='強度等級：'),
-            Line2D([0], [0], marker='o', color='none', label='LPA 低壓區', markerfacecolor='#E0E0E0', markeredgecolor='k', markersize=11),
+            Line2D([0], [0], marker='o', color='none', label='LPA 低壓區/EX 溫帶氣旋', markerfacecolor='#E0E0E0', markeredgecolor='k', markersize=11),
             Line2D([0], [0], marker='o', color='none', label='TD 熱帶低氣壓', markerfacecolor='#F9F1A5', markeredgecolor='k', markersize=11),
             Line2D([0], [0], marker='o', color='none', label='TS 熱帶風暴', markerfacecolor='#3498DB', markeredgecolor='k', markersize=11),
             Line2D([0], [0], marker='o', color='none', label='STS 強烈熱帶風暴', markerfacecolor='#2ECC71', markeredgecolor='k', markersize=11),
