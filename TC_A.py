@@ -91,7 +91,7 @@ def draw_chart():
         for d in forecast_data:
             _, ln, lt, wd, h, _ = d
             _, col = get_info(wd)
-            if h in {24, 48, 72, 96, 120}:
+            if h in {12, 24,36, 48,60, 72, 96, 120}:
                 ax.plot(ln, lt, marker=tcmarkers.HU, ms=10, color=col, mec='k', mew=1, zorder=10)
 
         # --- 調整後的圖例 (適當加大) ---
