@@ -49,7 +49,7 @@ def draw_chart():
         fig = plt.figure(figsize=(18, 12))
         ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
         
-        ax.set_extent([105.0, 165.0, 5.0, 50.0], crs=ccrs.PlateCarree())
+        ax.set_extent([115.0, 175.0, 5.0, 50.0], crs=ccrs.PlateCarree())
 
         # 地圖風格微調
         ax.add_feature(cfeature.LAND, facecolor="#F7F7F2", edgecolor="#7F8C8D", zorder=1)
@@ -102,7 +102,7 @@ def draw_chart():
                    markerfacecolor='#FFF5D7', markeredgecolor='#FFD180', markersize=12, alpha=0.6),
             Line2D([0], [0], color='none', label=''), 
             Line2D([0], [0], color='none', label='強度等級：'),
-            Line2D([0], [0], marker='o', color='none', label='LPA 低壓區/EX 溫帶氣旋', markerfacecolor='#E0E0E0', markeredgecolor='k', markersize=11),
+            Line2D([0], [0], marker='o', color='none', label='LPA 低壓區', markerfacecolor='#E0E0E0', markeredgecolor='k', markersize=11),
             Line2D([0], [0], marker='o', color='none', label='TD 熱帶低氣壓', markerfacecolor='#F9F1A5', markeredgecolor='k', markersize=11),
             Line2D([0], [0], marker='o', color='none', label='TS 熱帶風暴', markerfacecolor='#3498DB', markeredgecolor='k', markersize=11),
             Line2D([0], [0], marker='o', color='none', label='STS 強烈熱帶風暴', markerfacecolor='#2ECC71', markeredgecolor='k', markersize=11),
