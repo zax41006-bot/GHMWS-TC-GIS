@@ -104,8 +104,8 @@
     </div>
     <select id="tc-selector" onchange="init()">
         <option value="ALL">所有熱帶氣旋</option>
-        <option value="A">米克拉</option>
-        <option value="B">海高斯</option>
+        <option value="A">熱帶低氣壓</option>
+        <option value="B">巴威</option>
     </select>
 </div>
 
@@ -310,7 +310,7 @@ async function init() {
             map.fitBounds(allBounds, { padding: [50, 50] });
         }
     } else {
-        const tcName = target === 'A' ? '米克拉' : '海高斯';
+        const tcName = target === 'A' ? '熱帶低氣壓' : '巴威';
         const allPoints = await loadSingleTC(target, tcName);
         if (allPoints.length > 0) {
             map.fitBounds(allPoints, { padding: [50, 50] });
