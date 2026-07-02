@@ -2,6 +2,6 @@
 12hr,18.1,111.6,TD,55,1000,forecast
 24hr,19.0,111.0,TS,65,998,forecast
 36hr,20.0,109.3,TS,65,998,forecast
-48hr,21.3,108.9,STS,90,985,forecast
+48hr,21.3,108.9,TS,85,990,forecast
 60hr,22.5,109.0,TS,65,995,forecast
 72hr,23.9,109.1,LPA,35,1002,forecast
