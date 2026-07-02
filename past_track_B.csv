@@ -16,4 +16,4 @@ datetime,lat,lng,intensity,wind,minimum central pressure,type
 2/7/2026 20:00,12,158.2,STS,105,982,past
 2/7/2026 23:00,12.1,157.7,STS,110,980,past
 3/7/2026 02:00,12.5,156.6,STS,110,975,past
-3/7/2026 05:00,12.6,156,1,TY,120,970,current
+3/7/2026 05:00,12.6,156.1,TY,120,970,current
