@@ -300,8 +300,8 @@ async function init() {
     if (target === 'ALL') {
         const allBounds = [];
         const results = await Promise.all([
-            loadSingleTC('A', '96W'),
-            loadSingleTC('B', '09W')
+            loadSingleTC('A', '美莎克'),
+            loadSingleTC('B', '巴威')
         ]);
         results.forEach(points => {
             if (points.length > 0) allBounds.push(...points);
