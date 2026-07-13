@@ -106,6 +106,7 @@
         <option value="ALL">所有熱帶氣旋</option>
         <option value="A">海神</option>
         <option value="B">巴威</option>
+        <option value="C">未命名</option>
     </select>
 </div>
 
@@ -301,7 +302,8 @@ async function init() {
         const allBounds = [];
         const results = await Promise.all([
             loadSingleTC('A', '海神'),
-            loadSingleTC('B', '巴威')
+            loadSingleTC('B', '巴威'),
+            loadSingleTC('C', '未命名')
         ]);
         results.forEach(points => {
             if (points.length > 0) allBounds.push(...points);
@@ -310,7 +312,7 @@ async function init() {
             map.fitBounds(allBounds, { padding: [50, 50] });
         }
     } else {
-        const tcName = target === 'A' ? '美莎克' : '巴威';
+        const tcName = target === 'A' ? '海神' : '巴威';
         const allPoints = await loadSingleTC(target, tcName);
         if (allPoints.length > 0) {
             map.fitBounds(allPoints, { padding: [50, 50] });
