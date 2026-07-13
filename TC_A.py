@@ -49,7 +49,7 @@ def draw_chart():
         fig = plt.figure(figsize=(18, 12))
         ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
         
-        ax.set_extent([102.5, 135.0, 10.0, 35.0], crs=ccrs.PlateCarree())
+        ax.set_extent([110.0, 145.0, 7.5, 32.5], crs=ccrs.PlateCarree())
 
         # 地圖風格微調
         ax.add_feature(cfeature.LAND, facecolor="#F7F7F2", edgecolor="#7F8C8D", zorder=1)
@@ -125,7 +125,7 @@ def draw_chart():
         ax.text(0.01, 0.98, info_text, transform=ax.transAxes, va='top', fontsize=12, zorder=20,
                 bbox=dict(facecolor='white', alpha=0.85, edgecolor='#BDC3C7', boxstyle='round,pad=0.5'))
 
-        ax.set_title("熱帶氣旋“美莎克”路徑預報圖", fontsize=28, fontweight='bold', pad=25)
+        ax.set_title("熱帶氣旋“海神”路徑預報圖", fontsize=28, fontweight='bold', pad=25)
 
         plt.savefig(OUTPUT_IMG, dpi=300, bbox_inches='tight')
         plt.close() 
