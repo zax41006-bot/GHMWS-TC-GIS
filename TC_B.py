@@ -24,7 +24,7 @@ plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei', 'Microsoft YaHei', 'Sim
 plt.rcParams['axes.unicode_minus'] = False
 
 def get_info(wind):
-    if wind < 41: return "LPA 低壓區", "#E0E0E0"
+    if wind < 41: return "LPA/EX 低壓區/溫帶氣旋", "#E0E0E0"
     elif 41 <= wind <= 62: return "TD 熱帶低氣壓", "#F9F1A5"
     elif 63 <= wind <= 87: return "TS 熱帶風暴", "#3498DB"
     elif 88 <= wind <= 117: return "STS 強烈熱帶風暴", "#2ECC71"
