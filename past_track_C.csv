@@ -1,2 +1,4 @@
 ﻿datetime,lat,lng,intensity,wind,minimum central pressure,type
 14/7/2026 11:00,22.0,113.8,TD,55,999,current
+14/7/2026 13:00,22.25,113.6,TD,55,999,past
+14/7/2026 14:00,22.4,113.3,LPA,35,1001,current
