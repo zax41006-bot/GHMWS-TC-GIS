@@ -301,7 +301,7 @@ async function init() {
     if (target === 'ALL') {
         const allBounds = [];
         const results = await Promise.all([
-            loadSingleTC('A', '海神'),
+            loadSingleTC('A', '熱帶低氣壓'),
             loadSingleTC('B', '巴威'),
             loadSingleTC('C', '未命名')
         ]);
@@ -312,7 +312,7 @@ async function init() {
             map.fitBounds(allBounds, { padding: [50, 50] });
         }
     } else {
-        const tcName = target === 'A' ? '海神' : '巴威';
+        const tcName = target === 'A' ? '熱帶低氣壓' : '巴威';
         const allPoints = await loadSingleTC(target, tcName);
         if (allPoints.length > 0) {
             map.fitBounds(allPoints, { padding: [50, 50] });
