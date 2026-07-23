@@ -103,10 +103,10 @@
         <button class="img-btn" onclick="toggleForecastImg()">預報路徑圖</button>
     </div>
     <select id="tc-selector" onchange="init()">
-        <!--<option value="ALL">所有熱帶氣旋</option>-->
-        <option value="A">熱帶低氣壓</option>
-        <!--<option value="B">巴威</option>-->
-        <!--<option value="C">未命名</option>-->
+        <option value="ALL">所有熱帶氣旋</option>
+        <option value="A" selected>熱帶低氣壓</option>
+        <option value="B">巴威</option>
+        <option value="C">未命名</option>
     </select>
 </div>
 
@@ -135,6 +135,12 @@
 </div>
 
 <script>
+const TC_NAMES = {
+    'A': '熱帶低氣壓',
+    'B': '巴威',
+    'C': '未命名'
+};
+
 const intensityColors = {
     "LPA": "#dcdcdc", "EX": "#dcdcdc", "TD": "#eee8aa", "TS": "#3498db", 
     "STS": "#2ecc71", "TY": "#fb9f00", "STY": "#fe1e00", "SUTY": "#9b59b6", "default": "#666"
@@ -181,6 +187,34 @@ function parseCSV(text) {
     });
 }
 
+// [新增] 時間計算輔助函數：將 "DD/MM/YYYY HH:mm" 加上指定小時數
+function calculateForecastTime(baseTimeStr, addHours) {
+    if (!baseTimeStr) return `+${addHours}h`;
+    
+    // 解析 "23/7/2026 08:00"
+    const parts = baseTimeStr.trim().split(' ');
+    if (parts.length !== 2) return `+${addHours}h`;
+    
+    const dateParts = parts[0].split('/');
+    const timeParts = parts[1].split(':');
+    if (dateParts.length !== 3 || timeParts.length !== 2) return `+${addHours}h`;
+
+    // JavaScript 的 Date 月份是 0-11，所以 month 需要 -1
+    const date = new Date(dateParts[2], parseInt(dateParts[1]) - 1, dateParts[0], timeParts[0], timeParts[1]);
+    
+    // 加上預報小時
+    date.setHours(date.getHours() + parseFloat(addHours));
+
+    // 格式化回字串
+    const d = date.getDate();
+    const m = date.getMonth() + 1;
+    const y = date.getFullYear();
+    const h = date.getHours().toString().padStart(2, '0');
+    const min = date.getMinutes().toString().padStart(2, '0');
+
+    return `${d}/${m}/${y} ${h}:${min} (+${addHours}h)`;
+}
+
 function getSegmentSector(p1, r1, p2, r2) {
     const bearing = turf.bearing(p1, p2);
     const p1_l = turf.destination(p1, r1, bearing - 90, {units: 'kilometers'});
@@ -200,14 +234,27 @@ function getSmoothLine(points, options = {}) {
     return L.geoJSON(curved, { style: options });
 }
 
-function createPopupContent(data, type, tcName) {
+// [修改] 傳入 baseTimeStr 參數以計算預報時間
+function createPopupContent(data, type, tcName, baseTimeStr = null) {
     const timeValue = data.datetime || data.time || 'N/A';
     let header = ' 過去位置';
     if (type === 'current') header = ' 實時位置 ';
     if (type === 'forecast') header = ' 預報位置';
 
     const nameLabel = tcName ? `【${tcName}】` : '';
-    const timeLabel = (type === 'past' || type === 'current') ? `時間: ${timeValue}` : `預報時效: +${data.f_time}h`;
+    
+    // 判斷時間顯示邏輯
+    let timeLabel = '';
+    if (type === 'past' || type === 'current') {
+        timeLabel = `時間: ${timeValue}`;
+    } else {
+        if (baseTimeStr && data.f_time) {
+            timeLabel = `預報時間: ${calculateForecastTime(baseTimeStr, data.f_time)}`;
+        } else {
+            timeLabel = `預報時效: +${data.f_time}h`;
+        }
+    }
+
     const wind = data['wind'] !== undefined ? data['wind'] : '--';
     const pres = data['minimum central pressure'] !== undefined ? data['minimum central pressure'] : '--';
 
@@ -224,8 +271,8 @@ function createPopupContent(data, type, tcName) {
 async function loadSingleTC(tcId, tcName) {
     try {
         const [pRes, fRes] = await Promise.all([
-            fetch(`past_track_${tcId}.csv`),
-            fetch(`forecast_track_${tcId}.csv`)
+            fetch(`past_track_${tcId}.csv`).catch(() => ({ text: () => "" })),
+            fetch(`forecast_track_${tcId}.csv`).catch(() => ({ text: () => "" }))
         ]);
         const pastData = parseCSV(await pRes.text());
         const forecastData = parseCSV(await fRes.text());
@@ -233,6 +280,9 @@ async function loadSingleTC(tcId, tcName) {
 
         const latestPoint = pastData[pastData.length - 1];
         const historicalPoints = pastData.slice(0, pastData.length - 1);
+        
+        // [新增] 提取最新資料的時間，作為預報推算基準
+        const baseTimeStr = latestPoint.datetime;
 
         let coneParts = [];
         let prevPt = turf.point([latestPoint.lng, latestPoint.lat]);
@@ -277,6 +327,7 @@ async function loadSingleTC(tcId, tcName) {
           .bindPopup(createPopupContent(latestPoint, 'current', tcName))
           .bringToFront();
 
+        // [修改] 傳入 baseTimeStr 以供預報時間計算
         forecastData.forEach(d => {
             L.circleMarker([d.lat, d.lng], { 
                 radius: 5, 
@@ -284,7 +335,7 @@ async function loadSingleTC(tcId, tcName) {
                 color: "#333", 
                 weight: 1, 
                 fillOpacity: 0.8 
-            }).addTo(trackLayer).bindPopup(createPopupContent(d, 'forecast', tcName));
+            }).addTo(trackLayer).bindPopup(createPopupContent(d, 'forecast', tcName, baseTimeStr));
         });
 
         return pPoints.concat(fPath);
@@ -301,9 +352,9 @@ async function init() {
     if (target === 'ALL') {
         const allBounds = [];
         const results = await Promise.all([
-            loadSingleTC('A', '熱帶低氣壓'),
-            loadSingleTC('B', '巴威'),
-            loadSingleTC('C', '未命名')
+            loadSingleTC('A', TC_NAMES['A']),
+            loadSingleTC('B', TC_NAMES['B']),
+            loadSingleTC('C', TC_NAMES['C'])
         ]);
         results.forEach(points => {
             if (points.length > 0) allBounds.push(...points);
@@ -312,7 +363,7 @@ async function init() {
             map.fitBounds(allBounds, { padding: [50, 50] });
         }
     } else {
-        const tcName = target === 'A' ? '熱帶低氣壓' : '巴威';
+        const tcName = TC_NAMES[target] || target;
         const allPoints = await loadSingleTC(target, tcName);
         if (allPoints.length > 0) {
             map.fitBounds(allPoints, { padding: [50, 50] });
