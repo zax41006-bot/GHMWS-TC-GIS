@@ -3,6 +3,6 @@
 24hr,19.9,119.1,STS,105,980,forecast
 36hr,21.3,116.8,TY,130,970,forecast
 48hr,22.6,115,STY,155,955,forecast
-60hr,23.3,113.9,TY,105,980,forecast
+60hr,23.3,113.9,STS,105,980,forecast
 72hr,24.8,112,TD,55,1000,forecast
 96hr,25.8,111,LPA,30,1004,forecast
