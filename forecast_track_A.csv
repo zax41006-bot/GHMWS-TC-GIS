@@ -1,3 +1,4 @@
+f_time,lat,lng,intensity,wind,minimum central
 12hr,20.8,117.0,TY,140,960,forecast
 24hr,22.0,115.5,STY,160,950,forecast
 36hr,23.3,113.5,TY,120,975,forecast
