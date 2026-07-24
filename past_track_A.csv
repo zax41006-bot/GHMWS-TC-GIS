@@ -1,4 +1,4 @@
-datetime,lat,lng,intensity,wind,minimum central pressure,type
+﻿datetime,lat,lng,intensity,wind,minimum central pressure,type
 21/7/2026 20:00,13.3,136.7,TD,45,1005,past
 22/7/2026 02:00,13.3,135.5,TD,45,1005,past
 22/7/2026 08:00,13.4,133.4,TD,45,1005,past
@@ -12,4 +12,5 @@ datetime,lat,lng,intensity,wind,minimum central pressure,type
 24/7/2026 08:00,18.2,123.9,TS,85,990,past
 24/7/2026 11:00,18.7,123.0,STS,90,985,past
 24/7/2026 14:00,19.1,121.8,STS,90,985,past
-24/7/2026 17:00,19.2,121.6,STS,110,980,current 
+24/7/2026 17:00,19.2,121.6,STS,110,980,past
+24/7/2026 20:00,19.6,120,STS,110,980,current 
