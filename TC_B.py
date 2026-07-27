@@ -156,10 +156,6 @@ if __name__ == "__main__":
     # 啟動時先自動生成第一張圖
     draw_chart() 
     
-    event_handler = CSVHandler()
-    observer = Observer()
-    observer.schedule(event_handler, BASE_PATH, recursive=False)
-    observer.start()
     print(f"[{time.strftime('%H:%M:%S')}] 監控服務已啟動，正在監聽資料夾...")
     
     try:
@@ -167,7 +163,3 @@ if __name__ == "__main__":
             time.sleep(1)
     except KeyboardInterrupt:
         print("\n正在停止監控服務...")
-        observer.stop()
-        
-    observer.join()
-    print(">>> 服務已安全退出。")
