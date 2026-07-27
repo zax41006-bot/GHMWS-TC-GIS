@@ -49,7 +49,7 @@ def draw_chart():
         fig = plt.figure(figsize=(18, 12))
         ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
         
-        ax.set_extent([105.0, 155.0, 10.0, 45.0], crs=ccrs.PlateCarree())
+        ax.set_extent([100.0, 180.0, 0.0, 60.0], crs=ccrs.PlateCarree())
 
         # 地圖風格微調
         ax.add_feature(cfeature.LAND, facecolor="#F7F7F2", edgecolor="#7F8C8D", zorder=1)
@@ -111,7 +111,7 @@ def draw_chart():
             Line2D([0], [0], marker='o', color='none', label='SUTY 超強颱風', markerfacecolor='#9B59B6', markeredgecolor='k', markersize=11),
         ]
 
-        leg = ax.legend(handles=legend_elements, loc='lower right', bbox_to_anchor=(0.99, 0.02),
+        leg = ax.legend(handles=legend_elements, loc='lower left', bbox_to_anchor=(0.01, 0.02),
                         fontsize=11, frameon=True, facecolor='white', framealpha=0.9, 
                         edgecolor='#BDC3C7', labelspacing=0.6)
         leg.set_zorder(100)
@@ -125,7 +125,7 @@ def draw_chart():
         ax.text(0.01, 0.98, info_text, transform=ax.transAxes, va='top', fontsize=12, zorder=20,
                 bbox=dict(facecolor='white', alpha=0.85, edgecolor='#BDC3C7', boxstyle='round,pad=0.5'))
 
-        ax.set_title("熱帶氣旋“”路徑預報圖", fontsize=28, fontweight='bold', pad=25)
+        ax.set_title("熱帶氣旋“白海豚”路徑預報圖", fontsize=28, fontweight='bold', pad=25)
 
         plt.savefig(OUTPUT_IMG, dpi=300, bbox_inches='tight')
         plt.close() 
