@@ -1,9 +1,9 @@
 f_time,lat,lng,intensity,wind,minimum central pressure,type
-12hr,15.2,167.4,SUTY,195,930,forecast
-24hr,16.3,165.7,SUTY,205,920,forecast
-36hr,17.4,163.9,SUTY,220,910,forecast
-48hr,18.3,161.9,SUTY,230,905,forecast
-60hr,19.4,160.2,SUTY,240,900,forecast
-72hr,20.7,158.1,SUTY,230,905,forecast
-96hr,23.4,153.9,SUTY,220,910,forecast
-120hr,25.4,149.6,SUTY,205,920,forecast
+12hr,15.8,166.4,STY,175,930,forecast
+24hr,16.7,164.7,SUTY,185,920,forecast
+36hr,17.7,162.9,SUTY,205,910,forecast
+48hr,18.6,161.1,SUTY,220,905,forecast
+60hr,19.7,159.2,SUTY,240,900,forecast
+72hr,20.5,157.5,SUTY,220,905,forecast
+96hr,22,153.1,SUTY,210,910,forecast
+120hr,23.2,148.2,SUTY,205,920,forecast
