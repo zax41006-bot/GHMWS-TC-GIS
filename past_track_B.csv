@@ -12,4 +12,5 @@ datetime,lat,lng,intensity,wind,minimum central pressure,type
 30/7/2026 02:00,15.8,166.8,SUTY,240,915,past
 30/7/2026 08:00,16.4,165.8,SUTY,240,915,past
 30/7/2026 14:00,16.8,164.9,SUTY,240,915,past
-30/7/2026 20:00,17.4,163.9,SUTY,210,925,current
+30/7/2026 20:00,17.4,163.9,SUTY,210,925,past
+31/7/2026 02:00,17.8,163.1,SUTY,205,930,current
