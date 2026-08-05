@@ -114,8 +114,9 @@
     </div>
     <select id="tc-selector" onchange="init()">
         <option value="ALL">所有熱帶氣旋</option>
+        <option value="A">鯨魚</option>
         <option value="B">白海豚</option>
-        <option value="A">熱帶低氣壓</option>
+        <option value="C">燦鴻</option>
     </select>
 </div>
 
@@ -154,9 +155,9 @@
 
 <script>
 const TC_NAMES = {
-    'A': '熱帶低氣壓',
+    'A': '鯨魚',
     'B': '白海豚',
-    'C': '未命名氣旋' // 容錯處理，萬一載入了 C
+    'C': '燦鴻' 
 };
 
 const intensityColors = {
