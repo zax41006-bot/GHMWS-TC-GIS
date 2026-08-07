@@ -63,7 +63,6 @@
             border-radius: 4px; cursor: pointer; margin-left: 5px; transition: 0.3s;
         }
         .distance-panel button:hover { background: #2ecc71; }
-        /* 增加 line-height 以便顯示多個氣旋時更整齊 */
         #distance-result { margin-top: 8px; font-weight: bold; color: #d35400; line-height: 1.6; }
 
         #img-overlay {
@@ -121,7 +120,6 @@
 
 <div id="mapid"></div>
 
-<!-- 距離測算 UI -->
 <div class="distance-panel">
     <div>
         📍 <select id="city-selector" onchange="calculateDistance()"></select>
@@ -169,40 +167,34 @@ const intensityNames = {
 };
 
 const cityData = {
-    "澳門": [22.1987, 113.5439],
-    "香港": [22.3193, 114.1694],
-    "廣州": [23.1291, 113.2644],
-    "深圳": [22.5431, 114.0579],
-    "珠海": [22.2707, 113.5767],
-    "東莞": [23.0207, 113.7518],
-    "佛山": [23.0215, 113.1214],
-    "中山": [22.5170, 113.3928],
-    "江門": [22.5786, 113.0816],
-    "惠州": [23.1118, 114.4162],
-    "肇慶": [23.0489, 112.4651],
-    "汕頭": [23.3541, 116.6819],
-    "湛江": [21.2758, 110.3582],
-    "茂名": [21.6682, 110.9255],
-    "陽江": [21.8592, 111.9826],
-    "清遠": [23.6817, 113.0560],
-    "韶關": [24.8104, 113.5915],
-    "梅州": [24.2991, 116.1152],
-    "汕尾": [22.7845, 115.3753],
-    "河源": [23.7337, 114.6978],
-    "潮州": [23.6617, 116.6226],
-    "揭陽": [23.5498, 116.3728],
-    "雲浮": [22.9298, 112.0445]
+    "澳門": [22.1987, 113.5439], "香港": [22.3193, 114.1694], "廣州": [23.1291, 113.2644],
+    "深圳": [22.5431, 114.0579], "珠海": [22.2707, 113.5767], "東莞": [23.0207, 113.7518],
+    "佛山": [23.0215, 113.1214], "中山": [22.5170, 113.3928], "江門": [22.5786, 113.0816],
+    "惠州": [23.1118, 114.4162], "肇慶": [23.0489, 112.4651], "汕頭": [23.3541, 116.6819],
+    "湛江": [21.2758, 110.3582], "茂名": [21.6682, 110.9255], "陽江": [21.8592, 111.9826],
+    "清遠": [23.6817, 113.0560], "韶關": [24.8104, 113.5915], "梅州": [24.2991, 116.1152],
+    "汕尾": [22.7845, 115.3753], "河源": [23.7337, 114.6978], "潮州": [23.6617, 116.6226],
+    "揭陽": [23.5498, 116.3728], "雲浮": [22.9298, 112.0445]
 };
 
-// ================= [修改] 改用 Object 儲存所有當前畫面上氣旋的位置 =================
 let currentTcPositions = {}; 
-// 結構將會是： { 'A': { name: '熱帶低氣壓', coords: [lng, lat] }, 'B': { ... } }
-// ==============================================================================
 
-var map = L.map('mapid', { zoomControl: false }).setView([18.0, 135.0], 5);
+// ================= [修復 1] 解決放大地圖模糊與圖形消失 =================
+// 增加 preferCanvas: true 解決放大時 GeoJSON 邊界被剪裁消失的問題
+// 增加 maxZoom: 22 允許深度放大
+var map = L.map('mapid', { zoomControl: false, maxZoom: 22, preferCanvas: true }).setView([18.0, 135.0], 5);
 L.control.zoom({ position: 'topleft' }).addTo(map);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
+
+// 增加 maxNativeZoom: 19 讓超過 19 級時直接拉伸原有圖磚，避免模糊或白屏
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 22,
+    maxNativeZoom: 19
+}).addTo(map);
+
+// 設立獨立的邊界圖層和軌跡圖層，防止 clearLayers 時互相干擾
+let boundaryLayer = L.layerGroup().addTo(map);
 let trackLayer = L.layerGroup().addTo(map);
+// ===================================================================
 
 function loadBoundaries() {
     const geoJsonUrls = [
@@ -210,9 +202,13 @@ function loadBoundaries() {
         'https://geo.datav.aliyun.com/areas_v3/bound/810000.json',
         'https://geo.datav.aliyun.com/areas_v3/bound/820000.json' 
     ];
-    const boundaryStyle = { color: '#ff0000', weight: 2, opacity: 0.8, fillOpacity: 0 };
+    // 稍微加粗邊界 (weight: 2.5)，讓放大的時候紅框依然明顯
+    const boundaryStyle = { color: '#ff0000', weight: 2.5, opacity: 0.9, fillOpacity: 0 };
     geoJsonUrls.forEach(url => {
-        fetch(url).then(res => res.json()).then(data => { L.geoJSON(data, { style: boundaryStyle }).addTo(map); }).catch(err => console.error(err));
+        fetch(url)
+            .then(res => res.json())
+            .then(data => { L.geoJSON(data, { style: boundaryStyle }).addTo(boundaryLayer); })
+            .catch(err => console.error('邊界數據載入失敗 (可能被攔截):', err));
     });
 }
 loadBoundaries();
@@ -230,7 +226,6 @@ function initCitySelector() {
     }
 }
 
-// ================= [修改] 全新測距邏輯，支援顯示多個氣旋 =================
 function calculateDistance() {
     const target = document.getElementById('tc-selector').value;
     const resDiv = document.getElementById('distance-result');
@@ -244,11 +239,10 @@ function calculateDistance() {
         return;
     }
 
-    const cityPt = turf.point([cityCoords[1], cityCoords[0]]); // Turf.js [Lng, Lat]
+    const cityPt = turf.point([cityCoords[1], cityCoords[0]]);
 
     if (target === 'ALL') {
         let htmlContent = '';
-        // 遍歷所有已儲存的氣旋
         for (const tcId in currentTcPositions) {
             const tc = currentTcPositions[tcId];
             const tcPt = turf.point(tc.coords);
@@ -257,7 +251,6 @@ function calculateDistance() {
         }
         resDiv.innerHTML = htmlContent;
     } else {
-        // 單一氣旋測距
         const tc = currentTcPositions[target];
         if (tc) {
             const tcPt = turf.point(tc.coords);
@@ -268,7 +261,6 @@ function calculateDistance() {
         }
     }
 }
-// =====================================================================
 
 function setDefaultCity() {
     const city = document.getElementById('city-selector').value;
@@ -356,12 +348,10 @@ async function loadSingleTC(tcId, tcName) {
 
         const latestPoint = pastData[pastData.length - 1];
         
-        // ================= [修改] 把當前氣旋的位置加入到集合中 =================
         currentTcPositions[tcId] = {
             name: tcName,
-            coords: [latestPoint.lng, latestPoint.lat] // Turf.js 格式
+            coords: [latestPoint.lng, latestPoint.lat] 
         };
-        // ===================================================================
 
         const historicalPoints = pastData.slice(0, pastData.length - 1);
         const baseTimeStr = latestPoint.datetime;
@@ -403,9 +393,7 @@ async function loadSingleTC(tcId, tcName) {
 async function init() {
     trackLayer.clearLayers();
     
-    // ================= [修改] 切換選項時，先清空舊的坐標紀錄 =================
     currentTcPositions = {}; 
-    // ====================================================================
 
     const target = document.getElementById('tc-selector').value;
     
@@ -423,11 +411,13 @@ async function init() {
         if (allPoints.length > 0) map.fitBounds(allPoints, { padding: [50, 50] });
     }
 
-    // 資料載入並記錄完位置後，呼叫測距
     calculateDistance();
+    
+    // [修復] 確保重新繪製氣旋路徑後，邊界不會被覆蓋，且氣旋原點保持在最上方
+    if(boundaryLayer) boundaryLayer.bringToFront(); 
+    if(trackLayer) trackLayer.bringToFront();
 }
 
-// 頁面初始化
 initCitySelector();
 init();
 </script>
