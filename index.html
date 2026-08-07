@@ -114,7 +114,6 @@
     </div>
     <select id="tc-selector" onchange="init()">
         <option value="ALL">所有熱帶氣旋</option>
-        <option value="A">鯨魚</option>
         <option value="B">白海豚</option>
         <option value="C">燦鴻</option>
     </select>
@@ -155,7 +154,6 @@
 
 <script>
 const TC_NAMES = {
-    'A': '鯨魚',
     'B': '白海豚',
     'C': '燦鴻' 
 };
@@ -414,7 +412,6 @@ async function init() {
     if (target === 'ALL') {
         const allBounds = [];
         const results = await Promise.all([
-            loadSingleTC('A', TC_NAMES['A']),
             loadSingleTC('B', TC_NAMES['B']),
             loadSingleTC('C', TC_NAMES['C'] || '未命名氣旋')
         ]);
